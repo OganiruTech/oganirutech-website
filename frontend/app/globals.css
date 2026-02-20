@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand Colors */
+  --color-navy: #0B1F3B;
+  --color-navy-light: #112848;
+  --color-navy-dark: #070F1D;
+  --color-emerald: #0F9D58;
+  --color-emerald-light: #12B566;
+  --color-emerald-dark: #0A7A44;
+  --color-white: #FFFFFF;
+
+  /* Typography */
+  --font-sans: "Inter", sans-serif;
+
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+}
