@@ -16,13 +16,16 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
+
+    handleScroll(); // check immediately on mount
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-white ${
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
         scrolled ? "bg-navy shadow-lg" : "bg-transparent"
       }`}
     >
@@ -30,10 +33,15 @@ export default function Navbar() {
 
         {/* Wordmark */}
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-emerald font-extrabold text-2xl tracking-tight">O</span>
-          <span className="text-white font-bold text-lg tracking-widest uppercase">
-            Oganiru
-          </span>
+          <span className="text-emerald-700 font-extrabold text-4xl tracking-tight">O</span>
+          <div className="flex-col">
+            <div className="text-white font-bold text-xs tracking-widest uppercase">
+              OGANIRU
+            </div>
+            <div className="text-white font-bold text-xs tracking-widest uppercase">
+              TECHNOLOGIES
+            </div>
+          </div>
         </Link>
 
         {/* Desktop Nav */}
