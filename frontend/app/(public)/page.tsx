@@ -1,9 +1,16 @@
+import Hero from "@/components/Hero";
+import ImpactHighlight from "@/components/ImpactHighlight";
+import ProcessTimeline from "@/components/ProcessTimeline";
+import ProductsSection from "@/components/ProductsSection";
+import CareerSection from "@/components/CareerSection";
+
 export default function Home() {
   return (
-    <main className="min-h-[200vh] flex items-center justify-center">
-      <h1 className="text-4xl font-bold">
-        Oganiru Technologies
-      </h1>
-    </main>
+    <>
+      <Hero />
+      <ProcessTimeline />
+      <ProductsSection />
+      <CareerSection />
+    </>
   );
 }
