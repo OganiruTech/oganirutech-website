@@ -1,7 +1,18 @@
 "use client";
+
 import React from "react";
+import { motion } from "framer-motion";
 
 const Footer = () => {
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" }
+    }
+  };
+
   return (
     <footer className="relative bg-gradient-to-b from-[#0B1C2D] to-[#081520] text-gray-300 pt-20 pb-12 px-6 sm:px-8 md:px-12 overflow-hidden">
 
@@ -11,8 +22,13 @@ const Footer = () => {
       {/* Subtle Glow */}
       <div className="absolute -top-40 left-1/3 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[120px]"></div>
 
-      <div className="max-w-7xl mx-auto grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
-
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.3 }}
+        className="max-w-7xl mx-auto grid gap-12 sm:grid-cols-2 lg:grid-cols-4"
+      >
         {/* Brand */}
         <div>
           <h3 className="text-2xl font-bold text-white mb-4">
@@ -93,7 +109,7 @@ const Footer = () => {
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Bottom Section */}
       <div className="border-t border-white/10 mt-16 pt-6 text-center text-gray-500 text-sm">
