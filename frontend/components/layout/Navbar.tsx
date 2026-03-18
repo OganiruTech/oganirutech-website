@@ -7,7 +7,7 @@ const navLinks = [
   { label: "Products", href: "/products" },
   { label: "Careers", href: "/careers" },
   { label: "Contact", href: "/contact" },
-  { label: "Build With Us", href: "/build-with-us" },
+  // { label: "Build With Us", href: "/build-with-us" },
 ];
 
 export default function Navbar() {
@@ -29,7 +29,7 @@ export default function Navbar() {
         scrolled ? "bg-navy shadow-lg" : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="mx-auto lg:px-20 px-6 py-4 flex items-center justify-between">
 
         {/* Wordmark */}
         <Link href="/" className="flex items-center gap-2">
@@ -45,7 +45,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center xl:gap-30 lg:gap-20 gap-8">
           {navLinks.slice(0, 3).map((link) => (
             <Link
               key={link.href}
@@ -55,13 +55,15 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/build-with-us"
-            className="bg-emerald text-white text-sm font-semibold px-5 py-2 rounded-sm tracking-wide hover:bg-emerald-light transition-colors duration-200"
-          >
-            Build With Us
-          </Link>
         </nav>
+
+        {/* Desktop Navbar Button */}
+        <Link
+          href="/build-with-us"
+          className="hidden md:flex bg-emerald text-white text-sm font-semibold px-5 py-2 rounded-sm tracking-wide hover:bg-emerald-light transition-colors duration-200"
+        >
+          Build With Us
+        </Link>
 
         {/* Mobile Menu Toggle */}
         <button

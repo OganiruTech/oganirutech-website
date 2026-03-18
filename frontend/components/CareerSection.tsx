@@ -33,9 +33,9 @@ const CareerSection = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) setVisible(true);
+        setVisible(entry.isIntersecting);
       },
-      { threshold: 0.2 }
+      { threshold: 0.25 }
     );
 
     if (sectionRef.current) observer.observe(sectionRef.current);
@@ -48,14 +48,14 @@ const CareerSection = () => {
       className="relative bg-white py-24 px-6 md:px-12 overflow-hidden"
     >
       {/* SUBTLE GRID BACKGROUND */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-size-[40px_40px] pointer-events-none"></div>
       
       {/* STRIPE STYLE FLOATING PARTICLES */}
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(25)].map((_, i) => (
+        {[...Array(35)].map((_, i) => (
           <span
             key={i}
-            className="absolute w-1.5 h-1.5 bg-emerald-500/40 rounded-full animate-floatParticle"
+            className="absolute w-1.5 h-1.5 bg-emerald-500/50 rounded-full animate-floatParticle"
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
@@ -69,7 +69,7 @@ const CareerSection = () => {
       {/* HEADING */}
       <div
         className={`relative max-w-4xl mx-auto text-center mb-20 transition-all duration-1000 ${
-          visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-14"
         }`}
       >
         <h2 className="text-4xl md:text-5xl font-bold text-blue-950 mb-6">
@@ -89,9 +89,9 @@ const CareerSection = () => {
             className={`group relative backdrop-blur-xl bg-white/60 border border-white/40 p-8 rounded-2xl shadow-lg transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl ${
               visible
                 ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
+                : "opacity-0 translate-y-14"
             }`}
-            style={{ transitionDelay: `${index * 150}ms` }}
+            style={{ transitionDelay: `${index * 200}ms` }}
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500 rounded-t-2xl"></div>
 
@@ -112,7 +112,7 @@ const CareerSection = () => {
               <span className="relative z-10">Apply Now</span>
 
               {/* SHIMMER EFFECT */}
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
+              <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
             </button>
           </div>
         ))}
@@ -121,7 +121,7 @@ const CareerSection = () => {
       {/* FINAL CTA */}
       <div
         className={`relative text-center transition-all duration-1000 ${
-          visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-14"
         }`}
       >
         <p className="text-gray-600 mb-6 text-lg">
