@@ -1,39 +1,56 @@
-// components/Button.tsx
+"use client";
+
+import Link from "next/link";
 import React from "react";
 
 interface ButtonProps {
-  text: string;
-  textColor?: string;          // Tailwind text color class, e.g., "text-white"
-  bgColor?: string;            // Tailwind bg color class, e.g., "bg-emerald"
-  hoverBgColor?: string;       // Tailwind hover bg color, e.g., "hover:bg-emerald-light"
-  paddingX?: string;           // Tailwind px, e.g., "px-5"
-  paddingY?: string;           // Tailwind py, e.g., "py-3"
-  rounded?: string;            // Tailwind border radius, e.g., "rounded-sm"
-  fontSize?: string;           // Tailwind font size, e.g., "text-sm"
-  fontWeight?: string;         // Tailwind font weight, e.g., "font-semibold"
-  tracking?: string;           // Tailwind tracking, e.g., "tracking-wide"
-  className?: string;          // Extra classes if needed
+  children: React.ReactNode;
+  display?: string;
+  href?: string;               // If present → acts as Link
+  textColor?: string;
+  bgColor?: string;
+  hoverBgColor?: string;
+  paddingX?: string;
+  paddingY?: string;
+  rounded?: string;
+  fontSize?: string;
+  fontWeight?: string;
+  tracking?: string;
+  className?: string;
   onClick?: () => void;
+  target?: string;             // optional (e.g., "_blank")
 }
 
 const Button: React.FC<ButtonProps> = ({
-  text,
+  children,
+  display ="inline-flex",
+  href,
   textColor = "text-white",
   bgColor = "bg-emerald",
   hoverBgColor = "hover:bg-emerald-light",
   paddingX = "px-5",
-  paddingY = "py-2",
-  rounded = "rounded-sm",
+  paddingY = "py-2.5",
+  rounded = "rounded-md",
   fontSize = "text-sm",
   fontWeight = "font-semibold",
   tracking = "tracking-wide",
   className = "",
   onClick,
+  target,
 }) => {
-  const classes = `${bgColor} ${textColor} ${fontSize} ${fontWeight} ${paddingX} ${paddingY} ${rounded} ${tracking} text-center ${hoverBgColor} transition-colors duration-200 ${className}`;
+  const classes = `${bgColor} ${textColor} ${fontSize} ${fontWeight} ${paddingX} ${paddingY} ${rounded} ${tracking} ${display} items-center justify-center ${hoverBgColor} transition-colors duration-200 ${className}`;
+
+  if (href) {
+    return (
+      <Link href={href} onClick={onClick} target={target} className={classes}>
+        {children}
+      </Link>
+    );
+  }
+
   return (
     <button className={classes} onClick={onClick}>
-      {text}
+      {children}
     </button>
   );
 };

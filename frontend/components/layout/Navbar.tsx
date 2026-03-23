@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import Button from "../Button";
 
 const navLinks = [
+  { label: "Home", href: "/"},
   { label: "Products", href: "/products" },
   { label: "Careers", href: "/careers" },
   { label: "Contact", href: "/contact" },
-  // { label: "Build With Us", href: "/build-with-us" },
 ];
 
 export default function Navbar() {
@@ -29,7 +30,7 @@ export default function Navbar() {
         scrolled ? "bg-navy shadow-lg" : "bg-transparent"
       }`}
     >
-      <div className="mx-auto lg:px-20 px-6 py-4 flex items-center justify-between">
+      <div className="mx-auto lg:px-15 px-6 py-4 flex items-center justify-between">
 
         {/* Wordmark */}
         <Link href="/" className="flex items-center gap-2">
@@ -45,8 +46,8 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center xl:gap-30 lg:gap-20 gap-8">
-          {navLinks.slice(0, 3).map((link) => (
+        <nav className="hidden md:flex items-center lg:gap-20 gap-8">
+          {navLinks.slice(0, 4).map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -58,12 +59,11 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop Navbar Button */}
-        <Link
-          href="/build-with-us"
-          className="hidden md:flex bg-emerald text-white text-sm font-semibold px-5 py-2 rounded-sm tracking-wide hover:bg-emerald-light transition-colors duration-200"
-        >
-          Build With Us
-        </Link>
+        <Button
+          children="Build With Us"
+          href="/contact"
+          display="hidden md:flex"
+        />
 
         {/* Mobile Menu Toggle */}
         <button
@@ -78,9 +78,12 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      {menuOpen && (
-        <div className="md:hidden bg-navy border-t border-white/10 px-6 py-6 flex flex-col gap-5">
-          {navLinks.slice(0, 3).map((link) => (
+        <div className={`md:hidden absolute top-full left-0 w-full bg-navy border-t border-white/10 px-6 py-6 flex flex-col gap-5 transition-all duration-300 origin-top ${
+          menuOpen
+            ? "opacity-100 scale-y-100"
+            : "opacity-0 scale-y-0 pointer-events-none"
+        }`}>
+          {navLinks.slice(0, 4).map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -90,15 +93,15 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/build-with-us"
+          
+          <Button
+            children="Build With Us"
+            href="/contact"
             onClick={() => setMenuOpen(false)}
-            className="bg-emerald text-white text-sm font-semibold px-5 py-3 rounded-sm tracking-wide text-center hover:bg-emerald-light transition-colors duration-200"
-          >
-            Build With Us
-          </Link>
+            display="flex"
+            paddingY="py-3"
+          />
         </div>
-      )}
     </header>
   );
 }

@@ -1,6 +1,26 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { FaXTwitter, FaFacebookF, FaInstagram } from "react-icons/fa6";
+
+const socials = [
+  {
+    icon: <FaXTwitter />,
+    link: "https://x.com/oganirutech",
+    name: "Twitter",
+  },
+  {
+    icon: <FaFacebookF />,
+    link: "https://www.facebook.com/profile.php?id=61567296328675",
+    name: "Facebook",
+  },
+  {
+    icon: <FaInstagram />,
+    link: "https://instagram.com/oganirutechnologies",
+    name: "Instagram",
+  },
+];
 
 const careers = [
   {
@@ -41,6 +61,8 @@ const CareerSection = () => {
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
+
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <section
@@ -108,7 +130,7 @@ const CareerSection = () => {
             </p>
 
             {/* PREMIUM BUTTON */}
-            <button className="relative overflow-hidden bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl group-hover:bg-emerald-700">
+            <button onClick={() => setShowModal(true)} className="relative overflow-hidden bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl group-hover:bg-emerald-700">
               <span className="relative z-10">Apply Now</span>
 
               {/* SHIMMER EFFECT */}
@@ -134,27 +156,91 @@ const CareerSection = () => {
         </button>
       </div>
 
-      {/* ANIMATIONS */}
-      <style jsx>{`
-        @keyframes floatParticle {
-          0% {
-            transform: translateY(0px);
-            opacity: 0.3;
-          }
-          50% {
-            transform: translateY(-20px);
-            opacity: 0.7;
-          }
-          100% {
-            transform: translateY(0px);
-            opacity: 0.3;
-          }
-        }
+      <AnimatePresence>
+        {showModal && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {/* BACKDROP */}
+            <motion.div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowModal(false)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            />
 
-        .animate-floatParticle {
-          animation: floatParticle infinite ease-in-out;
-        }
-      `}</style>
+            {/* MODAL CARD */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{
+                duration: 0.45,
+                ease: [0.22, 1, 0.36, 1]
+              }}
+              className="
+                relative z-10
+                w-[90%] max-w-md
+                bg-white/20
+                backdrop-blur-xl
+                border border-white/20
+                rounded-2xl
+                p-8
+                text-center
+                shadow-2xl
+              "
+            >
+              <h3 className="text-xl font-semibold text-white mb-4">
+                We’re Not Hiring Right Now
+              </h3>
+
+              <p className="text-gray-100 mb-6 leading-relaxed">
+                We are not currently hiring. Follow us on our social media
+                platforms to stay updated when new opportunities open up.
+              </p>
+
+              {/* SOCIALS */}
+              <div className="flex justify-center gap-4 mb-6">
+                {socials.map((social, i) => (
+                  <a
+                    key={i}
+                    href={social.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.name}
+                    className="w-10 h-10 flex items-center justify-center rounded-full text-white bg-white/20 hover:bg-white/50 hover:scale-110 transition-all duration-300 cursor-pointer"
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
+
+              {/* CLOSE BUTTON */}
+              <button
+                onClick={() => setShowModal(false)}
+                className="
+                  bg-emerald-600
+                  hover:bg-emerald-700
+                  px-6 py-2
+                  rounded-lg
+                  text-white
+                  transition-all duration-300
+                  hover:scale-105
+                "
+              >
+                Close
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      
     </section>
   );
 };

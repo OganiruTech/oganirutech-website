@@ -1,7 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { FaXTwitter, FaFacebookF, FaInstagram } from "react-icons/fa6";
+
+const typingText = [
+  "Tell us about your idea...",
+  "What are you building?",
+  "How can we help you scale?",
+];
 
 const container = {
   hidden: {},
@@ -21,10 +28,64 @@ const item = {
   },
 };
 
+const socials = [
+  {
+    icon: <FaXTwitter />,
+    link: "https://x.com/oganirutech",
+    name: "Twitter",
+  },
+  {
+    icon: <FaFacebookF />,
+    link: "https://www.facebook.com/profile.php?id=61567296328675",
+    name: "Facebook",
+  },
+  {
+    icon: <FaInstagram />,
+    link: "https://instagram.com/oganirutechnologies",
+    name: "Instagram",
+  },
+];
+
 export default function ContactPage() {
 
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+
+  const [displayText, setDisplayText] = useState("");
+  const [textIndex, setTextIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  // Typing Effect
+  useEffect(() => {
+    if (message.length > 0) return;
+
+    const timeout = setTimeout(() => {
+      const current = typingText[textIndex];
+
+      if (charIndex < current.length) {
+        setDisplayText(current.slice(0, charIndex + 1));
+        setCharIndex(charIndex + 1);
+      } else {
+        setTimeout(() => {
+          setCharIndex(0);
+          setTextIndex((prev) => (prev + 1) % typingText.length);
+        }, 1500);
+      }
+    }, 40);
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, textIndex, message]);
+
+  // Mouse Tracking
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,7 +95,14 @@ export default function ContactPage() {
   };
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-b from-[#081520] via-[#0B1C2D] to-[#050C15] text-white overflow-hidden py-28 px-6 md:px-12">
+    <section onMouseMove={handleMouseMove} className="relative min-h-screen bg-gradient-to-b from-[#081520] via-[#0B1C2D] to-[#050C15] text-white overflow-hidden py-28 px-6 md:px-12">
+      {/* Cursor Spotlight */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `radial-gradient(300px circle at ${mousePos.x}px ${mousePos.y}px, rgba(16,185,129,0.15), transparent 60%)`,
+        }}
+      />
 
       {/* Ambient Glow */}
       <motion.div
@@ -75,9 +143,11 @@ export default function ContactPage() {
           {/* CONTACT FORM */}
           <motion.form
             variants={item}
+            onMouseMove={handleMouseMove}
             onSubmit={handleSubmit}
-            className="backdrop-blur-xl bg-white/5 border border-white/10 p-10 rounded-2xl shadow-xl space-y-6"
+            className="relative backdrop-blur-xl bg-white/5 border border-white/10 p-10 rounded-2xl shadow-xl space-y-6 overflow-hidden"
           >
+            
 
             <h3 className="text-2xl font-semibold mb-4">
               Send us a message
@@ -85,10 +155,10 @@ export default function ContactPage() {
 
             <textarea
               required
-              rows="5"
+              rows={5}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Your message..."
+              placeholder={displayText}
               className="
               w-full
               px-4
@@ -112,6 +182,7 @@ export default function ContactPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Your email address"
               className="
+              relative z-10
               w-full
               px-4
               py-3
@@ -129,7 +200,7 @@ export default function ContactPage() {
             <button
               type="submit"
               className="
-              relative
+              relative z-10
               overflow-hidden
               bg-emerald-600
               px-8
@@ -202,28 +273,18 @@ export default function ContactPage() {
               </h3>
 
               <div className="flex gap-5">
-
-                {["Twitter", "LinkedIn", "GitHub"].map((platform, i) => (
-                  <div
+                {socials.map((social, i) => (
+                  <a
                     key={i}
-                    className="
-                    w-12
-                    h-12
-                    flex
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-white/5
-                    hover:bg-emerald-500/20
-                    transition
-                    hover:scale-110
-                    cursor-pointer
-                    "
+                    href={social.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.name}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-emerald-500/20 hover:scale-110 transition-all duration-300 cursor-pointer"
                   >
-                    {platform[0]}
-                  </div>
+                    {social.icon}
+                  </a>
                 ))}
-
               </div>
 
               <p className="text-gray-400 mt-6">

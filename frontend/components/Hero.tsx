@@ -73,7 +73,7 @@ export default function Hero() {
             className="text-4xl md:text-6xl font-bold leading-tight"
           >
             Building the Digital Future{" "}
-            <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
               Africa Deserves
             </span>
           </motion.h1>
@@ -81,7 +81,7 @@ export default function Hero() {
           {/* PARAGRAPH */}
           <AnimatePresence mode="wait">
             <motion.p
-              key={currentLine}   // Important! Ensures AnimatePresence triggers a transition
+              key={currentLine}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.6 }}
@@ -100,10 +100,14 @@ export default function Hero() {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="flex gap-6"
           >
-            <Button text="Build With Us" />
+            <Button
+              children="Build With Us"
+              href="/contact"
+            />
 
             <Button
-              text="Our Products"
+              children="Our Products"
+              href="/products"
               bgColor="bg-transparent"
               hoverBgColor="hover:bg-white/30"
               className="

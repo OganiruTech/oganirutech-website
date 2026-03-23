@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { FaXTwitter, FaFacebookF, FaInstagram } from "react-icons/fa6";
 
 const Footer = () => {
   const fadeUp = {
@@ -12,6 +13,24 @@ const Footer = () => {
       transition: { duration: 0.8, ease: "easeOut" }
     }
   };
+
+  const socials = [
+    {
+      icon: <FaXTwitter />,
+      link: "https://x.com/oganirutech",
+      name: "Twitter",
+    },
+    {
+      icon: <FaFacebookF />,
+      link: "https://www.facebook.com/profile.php?id=61567296328675",
+      name: "Facebook",
+    },
+    {
+      icon: <FaInstagram />,
+      link: "https://instagram.com/oganirutechnologies",
+      name: "Instagram",
+    },
+  ];
 
   return (
     <footer className="relative bg-gradient-to-b from-[#0B1C2D] to-[#081520] text-gray-300 pt-20 pb-12 px-6 sm:px-8 md:px-12 overflow-hidden">
@@ -40,13 +59,17 @@ const Footer = () => {
           </p>
 
           <div className="flex space-x-4">
-            {["T", "L", "G"].map((icon, i) => (
-              <div
+            {socials.map((social, i) => (
+              <a
                 key={i}
+                href={social.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.name}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-emerald-500/20 hover:scale-110 transition-all duration-300 cursor-pointer"
               >
-                {icon}
-              </div>
+                {social.icon}
+              </a>
             ))}
           </div>
         </div>
