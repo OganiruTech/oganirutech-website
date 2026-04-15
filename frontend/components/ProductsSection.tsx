@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, easeOut } from "framer-motion";
 
 
 export default function ProductsSection() {
@@ -25,7 +25,10 @@ export default function ProductsSection() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: "easeOut" },
+      transition: {
+        duration: 0.8,
+        ease: easeOut, // ✅ FIXED
+      },
     },
   };
 
