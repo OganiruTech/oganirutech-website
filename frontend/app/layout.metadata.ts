@@ -92,9 +92,11 @@ export const metadata: Metadata = {
 
   // ── Verification (add your tokens when ready) ─────────────────────────────
   verification: {
-    google: "REPLACE_WITH_GOOGLE_SEARCH_CONSOLE_TOKEN",
-    // bing: "REPLACE_WITH_BING_WEBMASTER_TOKEN",
-  },
+    google: "0KIEvcUM61aPkvB5MtOpPs66JdJgeFBx0JTD0fpyVs8",
+    other: {
+      "msvalidate.01": "F9A8EA6AEF4DC203AEC5D5A5DBA6D9F1",
+    },
+  }
 };
 
 // ─── Viewport (separate from metadata in Next.js 14+) ────────────────────────
