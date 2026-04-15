@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, easeOut } from "framer-motion";
 import { FaXTwitter, FaFacebookF, FaInstagram } from "react-icons/fa6";
 import { api } from "@/lib/api";
+
 
 type SubStatus = "idle" | "loading" | "success" | "error";
 
@@ -14,7 +15,14 @@ const Footer = () => {
 
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: easeOut, // ✅ FIXED
+      },
+    },
   };
 
   const socials = [
