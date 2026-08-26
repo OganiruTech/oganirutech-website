@@ -1,42 +1,258 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   OGANIRU TECHNOLOGIES — DESIGN SYSTEM
+   Brand anchors preserved from the original build:
+     navy    #0B1F3B   (navy-800)
+     emerald #0F9D58   (emerald-500)
+   Everything below is a disciplined scale built around those two anchors,
+   tuned for WCAG AA contrast on both light and dark surfaces.
+   ========================================================================== */
+
 @theme {
-  /* Brand Colors */
+  /* ---------- Navy: structure, depth, authority ---------- */
+  --color-navy-50:  #F2F6FA;
+  --color-navy-100: #DCE6EF;
+  --color-navy-200: #B4C7DA;
+  --color-navy-300: #7C9CBE;   /* muted text on dark  — 5.79:1 on navy-800 */
+  --color-navy-400: #4A719F;   /* muted text on light — 5.06:1 on white    */
+  --color-navy-500: #2A4F80;
+  --color-navy-600: #1B3A63;
+  --color-navy-700: #112848;
+  --color-navy-800: #0B1F3B;   /* BRAND NAVY */
+  --color-navy-900: #070F1D;
+  --color-navy-950: #050B16;
+
+  /* ---------- Emerald: energy, growth, action ---------- */
+  --color-emerald-50:  #E9FBF1;
+  --color-emerald-100: #C4F3D9;
+  --color-emerald-200: #7FE3AE;
+  --color-emerald-300: #34D081;
+  --color-emerald-400: #12B566;  /* accent on dark — 6.16:1 on navy-800 */
+  --color-emerald-500: #0F9D58;  /* BRAND EMERALD */
+  --color-emerald-600: #0B8248;  /* CTA fill — 4.88:1 with white */
+  --color-emerald-700: #0A7A44;  /* link/text on light — 5.41:1 on white */
+  --color-emerald-800: #075E36;
+  --color-emerald-900: #064428;
+  --color-emerald-950: #04301B;
+
+  /* ---------- Legacy aliases (kept so nothing silently breaks) ---------- */
   --color-navy: #0B1F3B;
   --color-navy-light: #112848;
   --color-navy-dark: #070F1D;
   --color-emerald: #0F9D58;
   --color-emerald-light: #12B566;
   --color-emerald-dark: #0A7A44;
-  --color-white: #FFFFFF;
 
-  /* Typography */
-  --font-sans: "Inter", sans-serif;
+  /* ---------- Semantic surfaces ---------- */
+  --color-surface:        #FFFFFF;
+  --color-surface-subtle: #F7FAFC;
+  --color-surface-sunken: #EDF2F7;
+  --color-ink:            #0B1F3B;
+  --color-ink-muted:      #3E6389;   /* 6.2:1 on white */
+  --color-hairline:       #E2EAF2;
 
-  /* Font Weights */
+  --color-surface-dark:        #0B1F3B;
+  --color-surface-dark-raised: #112848;
+  --color-ink-invert:          #FFFFFF;
+  --color-ink-invert-muted:    #7C9CBE;
+  --color-hairline-dark:       rgba(255, 255, 255, 0.10);
+
+  /* ---------- Typography ---------- */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-sora), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
   --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
+
+  /* Fluid display scale — no breakpoint jumps, no overflow on 320px */
+  --text-display-2xl: clamp(2.75rem, 1.6rem + 5.2vw, 5.25rem);
+  --text-display-2xl--line-height: 1.02;
+  --text-display-2xl--letter-spacing: -0.035em;
+
+  --text-display-xl: clamp(2.25rem, 1.4rem + 3.9vw, 4rem);
+  --text-display-xl--line-height: 1.05;
+  --text-display-xl--letter-spacing: -0.032em;
+
+  --text-display-lg: clamp(1.875rem, 1.3rem + 2.6vw, 3rem);
+  --text-display-lg--line-height: 1.12;
+  --text-display-lg--letter-spacing: -0.028em;
+
+  --text-display-md: clamp(1.5rem, 1.2rem + 1.4vw, 2.125rem);
+  --text-display-md--line-height: 1.2;
+  --text-display-md--letter-spacing: -0.022em;
+
+  --text-lead: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  --text-lead--line-height: 1.65;
+
+  /* ---------- Radii ---------- */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.125rem;
+  --radius-2xl: 1.5rem;
+
+  /* ---------- Elevation — navy-tinted, never neutral black ---------- */
+  --shadow-xs: 0 1px 2px 0 rgb(11 31 59 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(11 31 59 / 0.07), 0 1px 2px -1px rgb(11 31 59 / 0.05);
+  --shadow-md: 0 4px 12px -2px rgb(11 31 59 / 0.08), 0 2px 6px -2px rgb(11 31 59 / 0.05);
+  --shadow-lg: 0 12px 28px -6px rgb(11 31 59 / 0.12), 0 4px 10px -4px rgb(11 31 59 / 0.06);
+  --shadow-xl: 0 24px 56px -12px rgb(11 31 59 / 0.18), 0 8px 20px -8px rgb(11 31 59 / 0.08);
+
+  /* ---------- Motion ---------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ---------- Layout rhythm ---------- */
+  --spacing-section: clamp(4.5rem, 3rem + 7vw, 9rem);
+  --spacing-gutter: clamp(1.25rem, 0.5rem + 3vw, 3rem);
+  --spacing-shell: 80rem;      /* 1280px content shell */
+  --spacing-shell-wide: 90rem; /* 1440px for full-bleed sections */
 }
 
-@keyframes floatParticle {
-  0% {
-    transform: translateY(0);
-    opacity: 0.3;
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+
+@layer base {
+  * {
+    border-color: var(--color-hairline);
   }
-  50% {
-    transform: translateY(-20px);
-    opacity: 0.7;
+
+  html {
+    scroll-behavior: smooth;
+    /* Fixed header is 72px; anchored sections must clear it */
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
   }
-  100% {
-    transform: translateY(0);
-    opacity: 0.3;
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* One consistent, visible focus ring everywhere — was missing entirely */
+  :focus-visible {
+    outline: 2px solid var(--color-emerald-500);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .on-dark :focus-visible,
+  [data-surface="dark"] :focus-visible {
+    outline-color: var(--color-emerald-300);
+  }
+
+  ::selection {
+    background-color: var(--color-emerald-200);
+    color: var(--color-navy-900);
+  }
+
+  /* Inputs inherit type instead of falling back to system UI */
+  input, textarea, select, button {
+    font: inherit;
   }
 }
 
-.animate-floatParticle {
-  animation: floatParticle infinite ease-in-out;
+/* ==========================================================================
+   UTILITIES
+   ========================================================================== */
+
+@utility shell {
+  width: 100%;
+  max-width: var(--spacing-shell);
+  margin-inline: auto;
+  padding-inline: var(--spacing-gutter);
+}
+
+@utility section-y {
+  padding-block: var(--spacing-section);
+}
+
+/* Hairline grid — the recurring "engineered" texture, one definition */
+@utility grid-texture {
+  background-image:
+    linear-gradient(to right, rgb(11 31 59 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(11 31 59 / 0.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+@utility grid-texture-dark {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* Fades a texture out toward the edges so it never ends in a hard line */
+@utility mask-fade-edges {
+  mask-image: radial-gradient(ellipse 80% 65% at 50% 40%, #000 40%, transparent 100%);
+}
+
+@utility mask-fade-b {
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+}
+
+/* ==========================================================================
+   ANIMATION
+   ========================================================================== */
+
+@keyframes float-slow {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -18px, 0); }
+}
+
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes sheen {
+  from { transform: translate3d(-120%, 0, 0); }
+  to   { transform: translate3d(220%, 0, 0); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translate3d(0, 6px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-float-slow { animation: float-slow 12s var(--ease-in-out-soft) infinite; }
+.animate-fade-in-up { animation: fade-in-up 0.32s var(--ease-out-expo) both; }
+.animate-fade-in    { animation: fade-in 0.3s var(--ease-in-out-soft) both; }
+.animate-marquee    { animation: marquee 38s linear infinite; }
+
+/* Respect the OS setting — the old build animated regardless */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

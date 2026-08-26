@@ -5,7 +5,6 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import Link from "next/link";
-import { siteConfig } from "@/lib/seo.config";
 
 // ─── BreadcrumbNav ────────────────────────────────────────────────────────────
 // Renders a visible + semantic breadcrumb trail.
@@ -97,7 +96,7 @@ export function SkipToContent() {
       className="
         sr-only focus:not-sr-only
         fixed top-2 left-2 z-[9999]
-        bg-emerald-600 text-white
+        bg-navy-800 text-white
         px-4 py-2 rounded-lg
         font-semibold text-sm
         focus:outline-none focus:ring-2 focus:ring-emerald-400

@@ -11,7 +11,7 @@ export const siteConfig = {
   keywords: [
     "tech company Nigeria",
     "software development Africa",
-    "web development Port Harcourt",
+    "software development Africa",
     "mobile app development Nigeria",
     "digital transformation Africa",
     "brand identity design Nigeria",
@@ -21,8 +21,6 @@ export const siteConfig = {
   ],
   address: {
     country: "NG",
-    region: "Rivers State",
-    locality: "Port Harcourt",
   },
   socials: {
     twitter: "https://x.com/oganirutech",

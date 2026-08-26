@@ -1,0 +1,12 @@
+Copyright 2019 The Sora Project Authors (https://github.com/sora-xor/sora-font)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+
+Inter — Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)
+Sora — Copyright 2020 The Sora Project Authors (https://github.com/wysiwyg-type/Sora)
+
+Both fonts are licensed under the SIL Open Font License, Version 1.1.
+Full text: https://openfontlicense.org
+
+Self-hosted rather than loaded from fonts.googleapis.com so that builds are
+reproducible offline and no visitor data is sent to a third party.

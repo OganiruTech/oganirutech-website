@@ -1,184 +1,234 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence, easeOut } from "framer-motion";
+import Link from "next/link";
+import { useId, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { FaXTwitter, FaFacebookF, FaInstagram } from "react-icons/fa6";
 import { api } from "@/lib/api";
-
+import Logo from "../brand/Logo";
+import { siteConfig } from "@/lib/seo.config";
 
 type SubStatus = "idle" | "loading" | "success" | "error";
 
-const Footer = () => {
-  const [subEmail, setSubEmail]   = useState("");
-  const [subStatus, setSubStatus] = useState<SubStatus>("idle");
-  const [subMsg, setSubMsg]       = useState("");
+const socials = [
+  { icon: FaXTwitter, link: siteConfig.socials.twitter, name: "X (Twitter)" },
+  { icon: FaFacebookF, link: siteConfig.socials.facebook, name: "Facebook" },
+  { icon: FaInstagram, link: siteConfig.socials.instagram, name: "Instagram" },
+];
 
-  const fadeUp = {
-    hidden: { opacity: 0, y: 40 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: easeOut, // ✅ FIXED
-      },
-    },
-  };
+/* Every one of these previously pointed at href="#". */
+const columns = [
+  {
+    title: "Company",
+    links: [
+      { label: "What we do", href: "/#services" },
+      { label: "How we work", href: "/#process" },
+      { label: "Careers", href: "/careers" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    title: "Explore",
+    links: [
+      { label: "Products", href: "/products" },
+      { label: "Start a project", href: "/contact" },
+      { label: "Sitemap", href: "/sitemap.xml" },
+    ],
+  },
+];
 
-  const socials = [
-    { icon: <FaXTwitter />, link: "https://x.com/oganirutech", name: "Twitter" },
-    { icon: <FaFacebookF />, link: "https://www.facebook.com/profile.php?id=61567296328675", name: "Facebook" },
-    { icon: <FaInstagram />, link: "https://instagram.com/oganirutechnologies", name: "Instagram" },
-  ];
+export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<SubStatus>("idle");
+  const [message, setMessage] = useState("");
+  const inputId = useId();
+  const reduce = useReducedMotion();
 
-  const handleSubscribe = async () => {
-    if (!subEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(subEmail)) {
-      setSubStatus("error");
-      setSubMsg("Please enter a valid email address.");
+  const busy = status === "loading" || status === "success";
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setStatus("error");
+      setMessage("Please enter a valid email address.");
       return;
     }
 
-    setSubStatus("loading");
-    setSubMsg("");
+    setStatus("loading");
+    setMessage("");
 
     try {
-      const result = await api.subscribe({ email: subEmail });
+      const result = await api.subscribe({ email });
       if (result.success) {
-        setSubStatus("success");
-        setSubMsg(result.message);
-        setSubEmail("");
+        setStatus("success");
+        setMessage(result.message || "You're on the list.");
+        setEmail("");
       } else {
-        setSubStatus("error");
-        setSubMsg(result.message ?? "Subscription failed. Please try again.");
+        setStatus("error");
+        setMessage(result.message ?? "Subscription failed. Please try again.");
       }
     } catch {
-      setSubStatus("error");
-      setSubMsg("Network error. Please try again.");
+      setStatus("error");
+      setMessage("Network error. Please try again.");
     }
   };
 
   return (
-    <footer className="relative bg-gradient-to-b from-[#0B1C2D] to-[#081520] text-gray-300 pt-20 pb-12 px-6 sm:px-8 md:px-12 overflow-hidden">
+    <footer
+      data-surface="dark"
+      className="relative overflow-hidden bg-navy-900 text-navy-300"
+    >
+      {/* Emerald hairline — the one decorative flourish kept from the old footer */}
+      <div aria-hidden="true" className="h-px w-full bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-40 left-1/4 h-96 w-96 rounded-full bg-emerald-500/[0.07] blur-[130px]"
+      />
+      <div aria-hidden="true" className="grid-texture-dark mask-fade-b pointer-events-none absolute inset-0" />
 
-      {/* Emerald Accent Line */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
-
-      {/* Subtle Glow */}
-      <div className="absolute -top-40 left-1/3 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[120px]" />
-
-      <motion.div
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: false, amount: 0.3 }}
-        className="max-w-7xl mx-auto grid gap-12 sm:grid-cols-2 lg:grid-cols-4"
-      >
-        {/* Brand */}
-        <div>
-          <h3 className="text-2xl font-bold text-white mb-4">
-            Oganiru <span className="text-emerald-400">Technologies</span>
-          </h3>
-          <p className="text-gray-400 leading-relaxed mb-6">
-            Building powerful digital solutions that empower businesses,
-            creators, and industries across Africa and beyond.
-          </p>
-          <div className="flex space-x-4">
-            {socials.map((social, i) => (
-              <a
-                key={i}
-                href={social.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.name}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-emerald-500/20 hover:scale-110 transition-all duration-300 cursor-pointer"
-              >
-                {social.icon}
-              </a>
-            ))}
-          </div>
-        </div>
-
-        {/* Company */}
-        <div>
-          <h4 className="text-white font-semibold mb-4">Company</h4>
-          <ul className="space-y-3">
-            {["About", "Products", "Careers", "Contact"].map((link, i) => (
-              <li key={i}>
-                <a href="#" className="hover:text-emerald-400 transition-colors duration-300">
-                  {link}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Resources */}
-        <div>
-          <h4 className="text-white font-semibold mb-4">Resources</h4>
-          <ul className="space-y-3">
-            {["Blog", "Documentation", "Support", "Privacy Policy"].map((link, i) => (
-              <li key={i}>
-                <a href="#" className="hover:text-emerald-400 transition-colors duration-300">
-                  {link}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Newsletter */}
-        <div>
-          <h4 className="text-white font-semibold mb-4">Stay Updated</h4>
-          <p className="text-gray-400 mb-5">Get product updates and company news.</p>
-
-          <div className="flex flex-col sm:flex-row gap-3">
-            <input
-              type="email"
-              value={subEmail}
-              onChange={(e) => setSubEmail(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-              placeholder="Enter your email address"
-              disabled={subStatus === "loading" || subStatus === "success"}
-              className="w-full px-4 py-3 rounded-lg sm:rounded-l-lg sm:rounded-r-none bg-white/10 border border-white/10 focus:outline-none focus:border-emerald-400 text-white placeholder-gray-400 disabled:opacity-50 transition-colors"
-            />
-            <button
-              onClick={handleSubscribe}
-              disabled={subStatus === "loading" || subStatus === "success"}
-              className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 px-6 py-3 rounded-lg sm:rounded-r-lg sm:rounded-l-none text-white font-medium transition-all duration-300 hover:scale-[1.03] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
-            >
-              {subStatus === "loading" ? (
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                </svg>
-              ) : subStatus === "success" ? "✓ Done" : "Subscribe"}
-            </button>
+      <div className="shell relative pt-20 pb-10">
+        <motion.div
+          initial={reduce ? { opacity: 0 } : { opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="grid gap-12 lg:grid-cols-12 lg:gap-8"
+        >
+          {/* Brand */}
+          <div className="lg:col-span-4">
+            <Logo tone="dark" />
+            <p className="mt-6 max-w-sm leading-relaxed text-navy-300">
+              We design and build resilient digital systems for businesses across Africa —
+              web platforms, mobile products, and the brands around them.
+            </p>
+            <ul className="mt-7 flex gap-3">
+              {socials.map(({ icon: Icon, link, name }) => (
+                <li key={name}>
+                  <a
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={name}
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-navy-200 transition-colors duration-200 hover:border-emerald-400/40 hover:bg-emerald-500/10 hover:text-emerald-300"
+                  >
+                    <Icon aria-hidden="true" className="h-4 w-4" />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Inline feedback */}
-          <AnimatePresence>
-            {subMsg && (
-              <motion.p
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className={`mt-3 text-xs font-medium ${
-                  subStatus === "success" ? "text-emerald-400" : "text-red-400"
-                }`}
-              >
-                {subMsg}
-              </motion.p>
-            )}
-          </AnimatePresence>
-        </div>
-      </motion.div>
+          {/* Link columns */}
+          {columns.map((col) => (
+            <nav key={col.title} aria-label={col.title} className="lg:col-span-2">
+              <h2 className="font-display text-sm font-semibold tracking-wide text-white">
+                {col.title}
+              </h2>
+              <ul className="mt-5 space-y-3.5">
+                {col.links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-navy-300 transition-colors duration-200 hover:text-emerald-300"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
 
-      {/* Bottom */}
-      <div className="border-t border-white/10 mt-16 pt-6 text-center text-gray-500 text-sm">
-        © {new Date().getFullYear()} Oganiru Technologies. All rights reserved.
+          {/* Newsletter */}
+          <div className="lg:col-span-4">
+            <h2 className="font-display text-sm font-semibold tracking-wide text-white">
+              Stay in the loop
+            </h2>
+            <p className="mt-5 text-sm leading-relaxed">
+              Occasional notes on what we&apos;re building and shipping. No noise.
+            </p>
+
+            <form onSubmit={handleSubscribe} className="mt-5" noValidate>
+              <label htmlFor={inputId} className="sr-only">
+                Email address
+              </label>
+              <div className="flex flex-col gap-2.5 sm:flex-row">
+                <input
+                  id={inputId}
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@company.com"
+                  disabled={busy}
+                  aria-invalid={status === "error"}
+                  aria-describedby={message ? `${inputId}-msg` : undefined}
+                  className="h-11 min-w-0 flex-1 rounded-lg border border-white/12 bg-white/[0.06] px-3.5 text-sm text-white placeholder:text-navy-300 transition-colors focus:border-emerald-400 disabled:opacity-50"
+                />
+                <button
+                  type="submit"
+                  disabled={busy}
+                  className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-emerald-700 disabled:pointer-events-none disabled:opacity-55"
+                >
+                  {status === "loading" ? (
+                    <>
+                      <Spinner />
+                      <span>Joining</span>
+                    </>
+                  ) : status === "success" ? (
+                    "Subscribed"
+                  ) : (
+                    "Subscribe"
+                  )}
+                </button>
+              </div>
+
+              {/* aria-live so screen readers hear the result, which the old one never announced */}
+              <div id={`${inputId}-msg`} role="status" aria-live="polite" className="mt-2.5 min-h-5">
+                <AnimatePresence mode="wait">
+                  {message && (
+                    <motion.p
+                      key={message}
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.25, ease: "easeOut" }}
+                      className={`text-xs font-medium ${
+                        status === "success" ? "text-emerald-300" : "text-red-300"
+                      }`}
+                    >
+                      {message}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </div>
+            </form>
+          </div>
+        </motion.div>
+
+        {/* Legal row */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-7 text-sm text-navy-300 sm:flex-row"
+        >
+          <p>© {new Date().getFullYear()} Oganiru Technologies. All rights reserved.</p>
+          <p>Nigeria · Building for Africa and beyond.</p>
+        </motion.div>
       </div>
     </footer>
   );
-};
+}
 
-export default Footer;
+function Spinner() {
+  return (
+    <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+    </svg>
+  );
+}

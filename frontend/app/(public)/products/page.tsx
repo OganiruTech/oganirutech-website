@@ -1,52 +1,53 @@
-"use client";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import React from "react";
+import type { Metadata } from "next";
+import { generatePageMetadata } from "@/lib/seo.config";
+import { OrganizationSchema, WebPageSchema } from "@/components/seo/jsonLd";
+import PageHeader from "@/components/ui/PageHeader";
+import ProductsSection from "@/components/ProductsSection";
+import Button from "@/components/Button";
 
-const UnderDevelopment = () => {
-  const router = useRouter();
+/* This route was previously a "use client" component with an inline copy of
+   UnderDevelopment and no metadata export at all — so /products shipped with
+   the generic site title, no canonical, no OG tags and no structured data,
+   despite sitemap.ts listing it at priority 0.9. */
 
+export const metadata: Metadata = generatePageMetadata("products");
+
+export default function ProductsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0B1C2D] to-[#081520] text-white flex items-center px-6 md:px-12 py-20">
+    <>
+      <OrganizationSchema />
+      <WebPageSchema
+        name="Products"
+        description="The digital products Oganiru Technologies is building for African businesses — currently in private testing."
+        path="/products"
+        datePublished="2024-01-01"
+      />
 
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-
-        {/* Illustration */}
-        <div className="relative w-full h-[300px] md:h-[450px]">
-          <Image
-            src="/under-development2.svg"
-            alt="Under development illustration"
-            fill
-            className="object-contain"
-            priority
-          />
+      <PageHeader
+        eyebrow="Products"
+        title={
+          <>
+            Software we&apos;re building{" "}
+            <span className="bg-gradient-to-r from-emerald-300 to-emerald-400 bg-clip-text text-transparent">
+              on our own account
+            </span>
+          </>
+        }
+        lead="Client work teaches you which problems keep coming back. These are the ones we decided to solve properly — for inventory, operations and payments in small African businesses. The first is in private testing; nothing is publicly available yet."
+      >
+        <div className="flex flex-wrap gap-3.5">
+          <Button href="#notify" size="lg" withArrow>
+            Get launch access
+          </Button>
+          <Button href="/contact" size="lg" variant="outline">
+            Work with us instead
+          </Button>
         </div>
+      </PageHeader>
 
-        {/* Content */}
-        <div className="max-w-xl">
-
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
-            This Page is <span className="text-emerald-400">Under Development</span>
-          </h1>
-
-          <p className="text-gray-300 text-lg leading-relaxed mb-10">
-            We’re currently designing and refining this experience.
-            It’s coming soon — crafted with precision and intention.
-          </p>
-
-          <button
-            onClick={() => router.push("/")}
-            className="relative group overflow-hidden bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-          >
-            <span className="relative z-10">Back to Home</span>
-
-            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-full transition-transform duration-1000"></span>
-          </button>
-
-        </div>
+      <div id="notify" className="scroll-mt-24">
+        <ProductsSection showHeader={false} />
       </div>
-    </div>
+    </>
   );
-};
-
-export default UnderDevelopment;
+}

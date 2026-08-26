@@ -1,305 +1,234 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import {
-  Lightbulb,
-  Search,
-  Palette,
-  Code,
-  Megaphone,
-  Rocket,
-} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Lightbulb, Search, Palette, Code2, Megaphone, Rocket } from "lucide-react";
+import { SectionHeader } from "./ui/Section";
 
-const AUTO_DURATION = 5000;
+const AUTO_MS = 7000;
 
 const steps = [
   {
     icon: Lightbulb,
-    title: "Ideation & Strategy",
+    title: "Ideation & strategy",
     description:
-      "We refine your vision and structure it into a scalable digital business model.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1600",
+      "We pull the idea apart before anyone writes code — who it serves, what it charges for, and which assumption would sink it.",
+    deliverables: ["Problem & opportunity brief", "Business model canvas", "Scope and phasing plan"],
   },
   {
     icon: Search,
-    title: "Market Intelligence",
+    title: "Market intelligence",
     description:
-      "We validate your concept through deep research and competitive positioning.",
-    image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1600",
+      "We test the concept against the market it has to survive in: real competitors, real pricing, real willingness to pay.",
+    deliverables: ["Competitive landscape", "User & buyer interviews", "Positioning recommendation"],
   },
   {
     icon: Palette,
-    title: "Brand Identity",
+    title: "Brand identity",
     description:
-      "We craft brands that command authority and inspire trust.",
-    image:
-      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1600",
+      "The name, the mark, the voice and the design system — built as tokens and components your team can actually use.",
+    deliverables: ["Logo & visual identity", "Design system in Figma", "Brand usage guide"],
   },
   {
-    icon: Code,
-    title: "Platform Development",
+    icon: Code2,
+    title: "Platform development",
     description:
-      "We build powerful web and mobile platforms engineered for growth.",
-    image:
-      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1600",
+      "Engineering in two-week increments against a staging environment you can open any day of the sprint.",
+    deliverables: ["Next.js front end", "Laravel API & data model", "CI, monitoring and docs"],
   },
   {
     icon: Megaphone,
-    title: "Digital Amplification",
+    title: "Digital amplification",
     description:
-      "We design strategic marketing systems that drive engagement.",
-    image:
-      "https://images.unsplash.com/photo-1533750349088-cd871a92f312?q=80&w=1600",
+      "Launch is a campaign, not a deploy. We set up the channels, the tracking and the content that brings the first users in.",
+    deliverables: ["Launch campaign plan", "Analytics & event tracking", "Content and SEO groundwork"],
   },
   {
     icon: Rocket,
-    title: "Launch & Scale",
+    title: "Launch & scale",
     description:
-      "We optimize, measure, and scale your digital ecosystem sustainably.",
-    image:
-      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1600",
+      "We stay on after go-live — watching the numbers, fixing what breaks, and deciding together what gets built next.",
+    deliverables: ["Performance & uptime SLAs", "Monthly product reviews", "Roadmap for the next quarter"],
   },
 ];
 
 export default function ProcessTimeline() {
   const [active, setActive] = useState(0);
-  const progressRef = useRef<NodeJS.Timeout | null>(null);
+  const [paused, setPaused] = useState(false);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const reduce = useReducedMotion();
 
-  const sectionRef = useRef(null);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-
-  const yParallax = useTransform(scrollYProgress, [0, 1], ["-5%", "5%"]);
-
-  /* AUTO SLIDE */
+  // Auto-advance, but only while the section isn't being interacted with.
+  // The old version advanced unconditionally with no way to stop it.
   useEffect(() => {
-    progressRef.current = setTimeout(() => {
-      setActive((prev) => (prev + 1) % steps.length);
-    }, AUTO_DURATION);
+    if (paused || reduce) return;
+    const id = setTimeout(() => setActive((p) => (p + 1) % steps.length), AUTO_MS);
+    return () => clearTimeout(id);
+  }, [active, paused, reduce]);
 
-    return () => {
-      if (progressRef.current) clearTimeout(progressRef.current);
-    };
+  const onKeyDown = useCallback((e: React.KeyboardEvent) => {
+    const last = steps.length - 1;
+    let next: number | null = null;
+
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") next = active === last ? 0 : active + 1;
+    else if (e.key === "ArrowUp" || e.key === "ArrowLeft") next = active === 0 ? last : active - 1;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = last;
+
+    if (next !== null) {
+      e.preventDefault();
+      setActive(next);
+      setPaused(true);
+      tabRefs.current[next]?.focus();
+    }
   }, [active]);
 
-  const progressPercent = (active / (steps.length - 1)) * 100;
-
-  /* PARTICLES GENERATED ONCE */
-  const [particles] = useState(() =>
-    [...Array(35)].map(() => ({
-      top: Math.random() * 100,
-      left: Math.random() * 100,
-      duration: 6 + Math.random() * 10,
-      delay: Math.random() * 5,
-    }))
-  );
-
-  /* STAGGER ANIMATION */
-  const container = {
-    hidden: {},
-    show: {
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 60 },
-    show: { opacity: 1, y: 0 },
-  };
+  const Current = steps[active].icon;
 
   return (
     <section
-      ref={sectionRef}
-      className="relative py-32 px-6 md:px-20 bg-white overflow-hidden"
+      id="process"
+      data-surface="dark"
+      aria-labelledby="process-heading"
+      className="section-y relative overflow-hidden bg-navy-800"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
     >
-      {/* GRID BACKGROUND */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
-
-      {/* GLOW */}
-      <motion.div
-        animate={{ y: [0, -20, 0] }}
-        transition={{ repeat: Infinity, duration: 8 }}
-        className="absolute top-20 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-gradient-to-b from-white via-emerald-100 to-white blur-[90px] rounded-full"
+      <div aria-hidden="true" className="grid-texture-dark mask-fade-edges pointer-events-none absolute inset-0" />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-32 left-1/2 h-[38rem] w-[38rem] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-[140px] motion-safe:animate-float-slow"
       />
 
-      {/* FLOATING PARTICLES */}
-      <div className="absolute inset-0 pointer-events-none">
-        {particles.map((p, i) => (
-          <span
-            key={i}
-            className="absolute w-1.5 h-1.5 bg-emerald-500/50 rounded-full animate-floatParticle"
-            style={{
-              top: `${p.top}%`,
-              left: `${p.left}%`,
-              animationDuration: `${p.duration}s`,
-              animationDelay: `${p.delay}s`,
-            }}
-          />
-        ))}
-      </div>
+      <div className="shell relative">
+        <SectionHeader
+          tone="dark"
+          eyebrow="How we work"
+          title={
+            <>
+              We walk with your business,{" "}
+              <span className="bg-gradient-to-r from-emerald-300 to-emerald-400 bg-clip-text text-transparent">
+                every step of the way
+              </span>
+            </>
+          }
+          lead="Six stages, in order. You can enter at any of them — most clients come to us somewhere in the middle."
+        />
 
-      {/* CONTENT */}
-      <motion.div
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: false, amount: 0.3 }}
-      >
-        {/* HEADER */}
-        <motion.div
-          variants={item}
-          transition={{ duration: 0.8 }}
-          className="text-center max-w-3xl mx-auto mb-24 relative z-10"
-        >
-          <h2 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
-            We Walk With Your Business
-            <span className="block bg-gradient-to-r from-green-600 to-emerald-400 bg-clip-text text-transparent">
-              Every Step of the Way
-            </span>
-          </h2>
-        </motion.div>
-
-        {/* TIMELINE */}
-        <motion.div
-          variants={item}
-          transition={{ duration: 0.9 }}
-          className="relative max-w-6xl mx-auto mb-24 hidden xl:block"
-        >
-          <div className="absolute top-10 left-0 w-full h-[8px] bg-gray-200 rounded-full" />
-
-          <motion.div
-            className="absolute top-10 left-0 h-[8px] bg-gradient-to-r from-green-600 to-emerald-400 rounded-full"
-            animate={{ width: `${progressPercent}%` }}
-            transition={{ duration: 0.8 }}
-          />
-
-          <div className="relative flex justify-between">
-            {steps.map((step, index) => {
+        <div className="mt-16 grid gap-8 lg:grid-cols-12 lg:gap-12">
+          {/* ---------- Step list (tabs) ---------- */}
+          <div
+            role="tablist"
+            aria-label="Our process"
+            aria-orientation="vertical"
+            onKeyDown={onKeyDown}
+            className="flex gap-2 overflow-x-auto pb-2 lg:col-span-5 lg:flex-col lg:overflow-visible lg:pb-0"
+          >
+            {steps.map((step, i) => {
               const Icon = step.icon;
-              const isActive = index === active;
-
+              const selected = i === active;
               return (
-                <div
-                  key={index}
-                  onClick={() => setActive(index)}
-                  className="flex flex-col items-center w-1/6 cursor-pointer"
+                <button
+                  key={step.title}
+                  ref={(el) => { tabRefs.current[i] = el; }}
+                  role="tab"
+                  id={`process-tab-${i}`}
+                  aria-selected={selected}
+                  aria-controls={`process-panel-${i}`}
+                  tabIndex={selected ? 0 : -1}
+                  onClick={() => { setActive(i); setPaused(true); }}
+                  className={`group relative flex shrink-0 items-center gap-3.5 rounded-xl border px-4 py-3.5 text-left transition-all duration-300 lg:w-full lg:shrink ${
+                    selected
+                      ? "border-emerald-400/40 bg-white/[0.07]"
+                      : "border-white/8 hover:border-white/20 hover:bg-white/[0.04]"
+                  }`}
                 >
-                  <motion.div
-                    animate={{ scale: isActive ? 1.2 : 1 }}
-                    transition={{ type: "spring", stiffness: 200 }}
-                    className={`w-20 h-20 rounded-full flex items-center justify-center z-10
-                    ${
-                      isActive
-                        ? "bg-gradient-to-r from-green-600 to-emerald-400 text-white shadow-2xl"
-                        : "bg-white border-2 border-gray-300 text-gray-600"
+                  <span
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors duration-300 ${
+                      selected
+                        ? "bg-emerald-600 text-white"
+                        : "bg-white/8 text-navy-200 group-hover:text-white"
                     }`}
                   >
-                    <Icon size={26} />
-                  </motion.div>
+                    <Icon className="h-[18px] w-[18px]" strokeWidth={1.9} />
+                  </span>
+                  <span className="flex min-w-0 flex-col">
+                    <span className={`text-[0.6875rem] font-semibold tracking-[0.14em] ${selected ? "text-emerald-300" : "text-navy-300"}`}>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className={`truncate text-sm font-semibold ${selected ? "text-white" : "text-navy-200"}`}>
+                      {step.title}
+                    </span>
+                  </span>
 
-                  <h3
-                    className={`mt-6 font-semibold ${
-                      isActive ? "text-green-700" : "text-gray-800"
-                    }`}
-                  >
-                    {step.title}
-                  </h3>
-                </div>
+                  {/* Auto-advance progress, only on the active tab */}
+                  {selected && !paused && !reduce && (
+                    <motion.span
+                      key={`bar-${active}`}
+                      aria-hidden="true"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ duration: AUTO_MS / 1000, ease: "linear" }}
+                      className="absolute inset-x-0 bottom-0 h-0.5 origin-left rounded-full bg-emerald-400/70"
+                    />
+                  )}
+                </button>
               );
             })}
           </div>
-        </motion.div>
 
-        {/* IMAGE PANEL */}
-        <motion.div
-          variants={item}
-          transition={{ duration: 1 }}
-          className="relative max-w-6xl mx-auto rounded-3xl overflow-hidden shadow-2xl h-[520px]"
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8 }}
-              className="absolute inset-0"
-            >
-              <motion.div
-                style={{
-                  y: yParallax,
-                  backgroundImage: `url(${steps[active].image})`,
-                }}
-                className="absolute inset-0 bg-cover bg-center scale-110"
-              />
+          {/* ---------- Detail panel ---------- */}
+          <div className="lg:col-span-7">
+            <div className="relative min-h-[24rem] overflow-hidden rounded-2xl border border-white/10 bg-navy-900/60 p-8 backdrop-blur-sm sm:p-10">
+              <div aria-hidden="true" className="grid-texture-dark pointer-events-none absolute inset-0 opacity-50" />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active}
+                  id={`process-panel-${active}`}
+                  role="tabpanel"
+                  aria-labelledby={`process-tab-${active}`}
+                  tabIndex={0}
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduce ? { opacity: 0 } : { opacity: 0, y: -12 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative focus:outline-none"
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/30">
+                      <Current className="h-6 w-6" strokeWidth={1.8} />
+                    </span>
+                    <span className="font-display text-5xl font-extrabold leading-none text-white/8">
+                      {String(active + 1).padStart(2, "0")}
+                    </span>
+                  </div>
 
-              <motion.div
-                key={active}
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ duration: AUTO_DURATION / 1000, ease: "linear" }}
-                className="absolute top-0 left-0 h-1 bg-white/80"
-              />
+                  <h3 className="mt-7 text-display-md font-bold text-white">{steps[active].title}</h3>
+                  <p className="mt-4 max-w-xl text-lead text-navy-200">{steps[active].description}</p>
 
-              <motion.div
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6 }}
-                className="absolute bottom-16 left-6 right-6 text-white max-w-2xl"
-              >
-                <h3 className="text-4xl font-bold mb-6">
-                  {steps[active].title}
-                </h3>
-                <p className="text-lg text-gray-200 leading-relaxed">
-                  {steps[active].description}
-                </p>
-              </motion.div>
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
-      </motion.div>
-
-      {/* BOTTOM DIVIDER */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
-        <svg viewBox="0 0 1440 120" className="w-full h-24" preserveAspectRatio="none">
-          <path
-            d="M0,40 C360,140 1080,-40 1440,60 L1440,120 L0,120 Z"
-            fill="#0f2a4d"
-          />
-        </svg>
+                  <div className="mt-8">
+                    <h4 className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-navy-300">
+                      What you get
+                    </h4>
+                    <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                      {steps[active].deliverables.map((d) => (
+                        <li key={d} className="flex items-start gap-2.5 text-sm text-navy-100">
+                          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400">
+                            <path d="M3 8.5 6.2 11.5 13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                          {d}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
       </div>
-
-      {/* ANIMATIONS */}
-      <style jsx>{`
-        @keyframes floatParticle {
-          0% {
-            transform: translateY(0px);
-            opacity: 0.3;
-          }
-          50% {
-            transform: translateY(-20px);
-            opacity: 0.7;
-          }
-          100% {
-            transform: translateY(0px);
-            opacity: 0.3;
-          }
-        }
-
-        .animate-floatParticle {
-          animation: floatParticle infinite ease-in-out;
-        }
-      `}</style>
     </section>
   );
 }

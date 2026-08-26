@@ -7,15 +7,16 @@ import {
   LocalBusinessSchema,
   FAQSchema,
 } from "@/components/seo/jsonLd";
- 
+
 import Hero from "@/components/Hero";
-import ImpactHighlight from "@/components/ImpactHighlight";
+import AboutSection from "@/components/AboutSection";
+import ServicesSection from "@/components/ServicesSection";
 import ProcessTimeline from "@/components/ProcessTimeline";
 import ProductsSection from "@/components/ProductsSection";
 import CareerSection from "@/components/CareerSection";
- 
+
 export const metadata: Metadata = generatePageMetadata("home");
- 
+
 export default function Home() {
   return (
     <>
@@ -29,9 +30,10 @@ export default function Home() {
       />
       <LocalBusinessSchema />
       <FAQSchema />
- 
+
       <Hero />
-      <ImpactHighlight />
+      <AboutSection />
+      <ServicesSection />
       <ProcessTimeline />
       <ProductsSection />
       <CareerSection />

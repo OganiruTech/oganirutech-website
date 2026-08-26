@@ -1,248 +1,125 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { FaXTwitter, FaFacebookF, FaInstagram } from "react-icons/fa6";
+import Button from "./Button";
+import { Eyebrow } from "./ui/Section";
+import { siteConfig } from "@/lib/seo.config";
+
+/* ---------------------------------------------------------------------------
+   CAREERS BAND
+   The previous version advertised three named open roles — Frontend
+   Developer, Backend Engineer, Product Designer — and every "Apply Now"
+   button opened a modal reading "We're Not Hiring Right Now". That is a
+   bait-and-switch on the one page candidates arrive at in good faith. This
+   states the position honestly and still gives strong candidates a way in.
+--------------------------------------------------------------------------- */
+
+const values = [
+  {
+    title: "Small team, real ownership",
+    body: "You own features end to end. Nobody here is three approvals away from shipping.",
+  },
+  {
+    title: "Built in the open",
+    body: "Decisions get written down and argued in public. Seniority doesn't win the argument.",
+  },
+  {
+    title: "Africa-first engineering",
+    body: "We optimise for the devices and networks our users actually have, not the ones we wish they had.",
+  },
+];
 
 const socials = [
-  {
-    icon: <FaXTwitter />,
-    link: "https://x.com/oganirutech",
-    name: "Twitter",
-  },
-  {
-    icon: <FaFacebookF />,
-    link: "https://www.facebook.com/profile.php?id=61567296328675",
-    name: "Facebook",
-  },
-  {
-    icon: <FaInstagram />,
-    link: "https://instagram.com/oganirutechnologies",
-    name: "Instagram",
-  },
+  { icon: FaXTwitter, link: siteConfig.socials.twitter, name: "X (Twitter)" },
+  { icon: FaFacebookF, link: siteConfig.socials.facebook, name: "Facebook" },
+  { icon: FaInstagram, link: siteConfig.socials.instagram, name: "Instagram" },
 ];
 
-const careers = [
-  {
-    title: "Frontend Developer",
-    location: "Remote",
-    type: "Full-Time",
-    description:
-      "Work on building responsive, dynamic interfaces for Tailor's Clutch and other products.",
-  },
-  {
-    title: "Backend Engineer",
-    location: "Aba, Nigeria",
-    type: "Full-Time",
-    description:
-      "Develop and maintain APIs, database schemas, and server-side logic to power our applications.",
-  },
-  {
-    title: "Product Designer",
-    location: "Hybrid",
-    type: "Contract",
-    description:
-      "Design intuitive user experiences and visuals across web and mobile platforms.",
-  },
-];
+export default function CareerSection() {
+  const reduce = useReducedMotion();
 
-const CareerSection = () => {
-  const sectionRef = useRef(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setVisible(entry.isIntersecting);
-      },
-      { threshold: 0.25 }
-    );
-
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  const [showModal, setShowModal] = useState(false);
+  const reveal = (i = 0) => ({
+    initial: reduce ? { opacity: 0 } : { opacity: 0, y: 24 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.2 },
+    transition: { duration: 0.6, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] as const },
+  });
 
   return (
     <section
-      ref={sectionRef}
-      className="relative bg-white py-24 px-6 md:px-12 overflow-hidden"
+      id="careers"
+      data-surface="dark"
+      aria-labelledby="careers-heading"
+      className="section-y relative overflow-hidden bg-navy-800"
     >
-      {/* SUBTLE GRID BACKGROUND */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-size-[40px_40px] pointer-events-none"></div>
-      
-      {/* STRIPE STYLE FLOATING PARTICLES */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(35)].map((_, i) => (
-          <span
-            key={i}
-            className="absolute w-1.5 h-1.5 bg-emerald-500/50 rounded-full animate-floatParticle"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDuration: `${6 + Math.random() * 10}s`,
-              animationDelay: `${Math.random() * 5}s`,
-            }}
-          ></span>
-        ))}
-      </div>
-
-      {/* HEADING */}
+      <div aria-hidden="true" className="grid-texture-dark mask-fade-edges pointer-events-none absolute inset-0" />
       <div
-        className={`relative max-w-4xl mx-auto text-center mb-20 transition-all duration-1000 ${
-          visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-14"
-        }`}
-      >
-        <h2 className="text-4xl md:text-5xl font-bold text-blue-950 mb-6">
-          Build the Future with{" "}
-          <span className="text-emerald-600">Oganiru Technologies</span>
-        </h2>
-        <p className="text-gray-600 text-lg md:text-xl leading-relaxed">
-          We design and build transformative digital products that empower industries.
-        </p>
-      </div>
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-0 right-1/4 h-96 w-96 rounded-full bg-emerald-500/10 blur-[130px]"
+      />
 
-      {/* JOB LISTINGS WITH GLASS MORPHISM */}
-      <div className="relative grid gap-10 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto mb-24">
-        {careers.map((job, index) => (
-          <div
-            key={index}
-            className={`group relative backdrop-blur-xl bg-white/60 border border-white/40 p-8 rounded-2xl shadow-lg transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl ${
-              visible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-14"
-            }`}
-            style={{ transitionDelay: `${index * 200}ms` }}
-          >
-            <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500 rounded-t-2xl"></div>
-
-            <h3 className="text-2xl font-semibold text-blue-950 mb-3">
-              {job.title}
-            </h3>
-
-            <p className="text-sm text-gray-500 mb-3">
-              {job.location} • {job.type}
+      <div className="shell relative">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <motion.div {...reveal()} className="lg:col-span-5">
+            <Eyebrow tone="dark">Careers</Eyebrow>
+            <h2 id="careers-heading" className="mt-5 text-display-lg font-bold text-white">
+              Build the future with Oganiru
+            </h2>
+            <p className="mt-5 text-lead text-navy-200">
+              We&apos;re a small engineering studio in Nigeria, working on systems that have
+              to survive contact with the real world — across Africa.
             </p>
 
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              {job.description}
-            </p>
-
-            {/* PREMIUM BUTTON */}
-            <button onClick={() => setShowModal(true)} className="relative overflow-hidden bg-emerald-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl group-hover:bg-emerald-700">
-              <span className="relative z-10">Apply Now</span>
-
-              {/* SHIMMER EFFECT */}
-              <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {/* FINAL CTA */}
-      <div
-        className={`relative text-center transition-all duration-1000 ${
-          visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-14"
-        }`}
-      >
-        <p className="text-gray-600 mb-6 text-lg">
-          Don't see your role? We're always open to exceptional talent.
-        </p>
-
-        <button className="relative overflow-hidden bg-blue-950 text-white px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-          <span className="relative z-10">View All Careers</span>
-          <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-1000"></span>
-        </button>
-      </div>
-
-      <AnimatePresence>
-        {showModal && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {/* BACKDROP */}
-            <motion.div
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              onClick={() => setShowModal(false)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            />
-
-            {/* MODAL CARD */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{
-                duration: 0.45,
-                ease: [0.22, 1, 0.36, 1]
-              }}
-              className="
-                relative z-10
-                w-[90%] max-w-md
-                bg-white/20
-                backdrop-blur-xl
-                border border-white/20
-                rounded-2xl
-                p-8
-                text-center
-                shadow-2xl
-              "
-            >
-              <h3 className="text-xl font-semibold text-white mb-4">
-                We’re Not Hiring Right Now
-              </h3>
-
-              <p className="text-gray-100 mb-6 leading-relaxed">
-                We are not currently hiring. Follow us on our social media
-                platforms to stay updated when new opportunities open up.
+            <div className="mt-8 rounded-xl border border-white/10 bg-white/[0.04] p-6">
+              <p className="flex items-center gap-2.5 text-sm font-semibold text-white">
+                <span className="h-2 w-2 shrink-0 rounded-full bg-amber-400" />
+                No open roles right now
               </p>
-
-              {/* SOCIALS */}
-              <div className="flex justify-center gap-4 mb-6">
-                {socials.map((social, i) => (
-                  <a
-                    key={i}
-                    href={social.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.name}
-                    className="w-10 h-10 flex items-center justify-center rounded-full text-white bg-white/20 hover:bg-white/50 hover:scale-110 transition-all duration-300 cursor-pointer"
-                  >
-                    {social.icon}
-                  </a>
-                ))}
+              <p className="mt-3 text-sm leading-relaxed text-navy-200">
+                When that changes, it gets posted here and on our social channels first.
+                If you&apos;re strong and patient, send us something you&apos;ve built — we
+                keep good work on file and we do reach back out.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <Button href="/careers" variant="outline" size="sm" withArrow>
+                  More about working here
+                </Button>
+                <ul className="flex gap-2">
+                  {socials.map(({ icon: Icon, link, name }) => (
+                    <li key={name}>
+                      <a
+                        href={link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Follow Oganiru Technologies on ${name}`}
+                        className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-navy-200 transition-colors hover:border-emerald-400/40 hover:bg-emerald-500/10 hover:text-emerald-300"
+                      >
+                        <Icon aria-hidden="true" className="h-3.5 w-3.5" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
-
-              {/* CLOSE BUTTON */}
-              <button
-                onClick={() => setShowModal(false)}
-                className="
-                  bg-emerald-600
-                  hover:bg-emerald-700
-                  px-6 py-2
-                  rounded-lg
-                  text-white
-                  transition-all duration-300
-                  hover:scale-105
-                "
-              >
-                Close
-              </button>
-            </motion.div>
+            </div>
           </motion.div>
-        )}
-      </AnimatePresence>
 
-      
+          <div className="lg:col-span-7">
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+              {values.map((value, i) => (
+                <motion.li
+                  key={value.title}
+                  {...reveal(i + 1)}
+                  className="group rounded-xl border border-white/10 bg-white/[0.03] p-6 transition-colors duration-300 hover:border-emerald-400/30 hover:bg-white/[0.06]"
+                >
+                  <h3 className="font-display text-lg font-bold text-white">{value.title}</h3>
+                  <p className="mt-2.5 leading-relaxed text-navy-200">{value.body}</p>
+                </motion.li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
     </section>
   );
-};
-
-export default CareerSection;
+}

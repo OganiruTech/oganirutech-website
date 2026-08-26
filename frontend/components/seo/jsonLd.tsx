@@ -27,8 +27,6 @@ export function OrganizationSchema() {
     address: {
       "@type": "PostalAddress",
       addressCountry: siteConfig.address.country,
-      addressRegion: siteConfig.address.region,
-      addressLocality: siteConfig.address.locality,
     },
     sameAs: [
       siteConfig.socials.twitter,
@@ -190,14 +188,7 @@ export function LocalBusinessSchema() {
     paymentAccepted: "Bank Transfer, Crypto",
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Port Harcourt",
-      addressRegion: "Rivers State",
       addressCountry: "NG",
-    },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: 4.8156,
-      longitude: 7.0498,
     },
     openingHoursSpecification: [
       {
@@ -219,8 +210,8 @@ export function LocalBusinessSchema() {
       siteConfig.socials.instagram,
     ],
     areaServed: [
-      { "@type": "Country", name: "Nigeria" },
       { "@type": "Continent", name: "Africa" },
+      { "@type": "Country", name: "Nigeria" },
     ],
     hasOfferCatalog: {
       "@type": "OfferCatalog",
@@ -282,7 +273,7 @@ export function FAQSchema() {
     {
       question: "Where is Oganiru Technologies based?",
       answer:
-        "We are based in Port Harcourt, Rivers State, Nigeria, and serve clients across Africa and globally.",
+        "We are based in Nigeria and work with clients across Africa and beyond.",
     },
     {
       question: "How quickly does Oganiru respond to inquiries?",
