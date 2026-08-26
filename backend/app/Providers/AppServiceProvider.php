@@ -37,5 +37,13 @@ class AppServiceProvider extends ServiceProvider
                 ], 429);
             });
         });
+
+        // Admin login: 5 attempts per minute per IP+email pair, to blunt
+        // credential stuffing without locking a legitimate admin out for long.
+        RateLimiter::for('admin-login', function (Request $request) {
+            $key = strtolower((string) $request->input('email')).'|'.$request->ip();
+
+            return Limit::perMinute(5)->by($key);
+        });
     }
 }

@@ -12,9 +12,9 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 /**
- * Internal alert: someone submitted the contact form.
+ * Confirmation sent to the visitor who submitted the contact form.
  */
-class ContactFormMail extends Mailable implements ShouldQueue
+class ContactReceivedMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -30,18 +30,13 @@ class ContactFormMail extends Mailable implements ShouldQueue
     {
         return new Envelope(
             from: new Address(config('oganiru.from_email'), config('oganiru.from_name')),
-            replyTo: [new Address($this->contact->email)],
-            subject: 'New contact form submission — '.config('oganiru.site_name'),
+            replyTo: [new Address(config('oganiru.admin_email'), config('oganiru.admin_name'))],
+            subject: 'We received your message — '.config('oganiru.site_name'),
         );
     }
 
     public function content(): Content
     {
-        return new Content(
-            view: 'emails.contact',
-            with: [
-                'dashboardUrl' => route('admin.contacts.show', $this->contact->id),
-            ],
-        );
+        return new Content(view: 'emails.contact-received');
     }
 }

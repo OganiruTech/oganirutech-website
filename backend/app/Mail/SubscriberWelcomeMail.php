@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\ContactMessage;
+use App\Models\Subscriber;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -12,9 +12,9 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 /**
- * Internal alert: someone submitted the contact form.
+ * Welcome message sent to a newly confirmed subscriber.
  */
-class ContactFormMail extends Mailable implements ShouldQueue
+class SubscriberWelcomeMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -23,25 +23,20 @@ class ContactFormMail extends Mailable implements ShouldQueue
     public array $backoff = [60, 300, 900];
 
     public function __construct(
-        public readonly ContactMessage $contact
+        public readonly Subscriber $subscriber
     ) {}
 
     public function envelope(): Envelope
     {
         return new Envelope(
             from: new Address(config('oganiru.from_email'), config('oganiru.from_name')),
-            replyTo: [new Address($this->contact->email)],
-            subject: 'New contact form submission — '.config('oganiru.site_name'),
+            replyTo: [new Address(config('oganiru.admin_email'), config('oganiru.admin_name'))],
+            subject: "You're on the list — ".config('oganiru.site_name'),
         );
     }
 
     public function content(): Content
     {
-        return new Content(
-            view: 'emails.contact',
-            with: [
-                'dashboardUrl' => route('admin.contacts.show', $this->contact->id),
-            ],
-        );
+        return new Content(view: 'emails.subscriber-welcome');
     }
 }
